@@ -10,7 +10,8 @@ class SeltTest:
         self.username = RuntimeConfig.USERNAME
         self.password = RuntimeConfig.PASSWORD 
 
-    def huawei_5300_selt_test(self, host: str, interface_address: str):
+    @staticmethod
+    def huawei_5300_selt_test(host: str, interface_address: str):
         with Telnet(host) as tn_socket:
             tn_socket.write(self.username.encode("ascii") + b"\r\n")
             tn_socket.write(self.password.encode("ascii") + b"\r\n")

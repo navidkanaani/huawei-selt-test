@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from markupsafe import escape
 
 from selt_test import SeltTest
@@ -6,8 +6,9 @@ from selt_test import SeltTest
 
 app = Flask(__name__)
 
-@app.route("/huawei-dslam-5300/<host_address:string>/<interface_address:string>")
-def huawei_5300_selt_test(host_address: str, interface_address: str) -> str:
+@app.route("/huawei-dslam-5300/<host_address>")
+def huawei_5300_selt_test(host_address: str) -> str:
+    interface_address = request.args.get("interface")
     selt_test_result = SeltTest.huawei_5300_selt_test(host=escape(host_address), 
                                                       interface_address=escape(interface_address))
     
