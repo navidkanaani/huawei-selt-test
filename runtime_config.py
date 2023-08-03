@@ -1,4 +1,4 @@
 class RuntimeConfig:
-    USERNAME = "Fanava"
+    USERNAME = "Fanavasd"
     PASSWORD = "SD@82185"
     

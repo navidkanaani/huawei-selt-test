@@ -21,8 +21,10 @@ with Telnet(HOST) as tn:
     time.sleep(60)
     tn.write("show adsl test selt adsl 2/0/47".encode("ascii") + b"\r\n\r\n")
     time.sleep(10)
-    result = tn.read_very_eager().decode("ascii")
-    # print(result)
+    try:
+        result = tn.read_very_eager().decode("ascii")
+    except BrokenPipeError as error:
+        print("test failed try again!")
     time.sleep(20)
     tn.write("adsl activate adsl 2/0/47".encode("ascii") + b"\r\n")
 
