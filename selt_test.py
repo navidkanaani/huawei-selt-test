@@ -2,7 +2,6 @@ from telnetlib import Telnet
 import time
 import logging
 
-import app
 from utils import Utils
 from runtime_config import RuntimeConfig
 
@@ -11,6 +10,7 @@ logger = logging.getLogger("app")
 class SeltTest:
     @staticmethod
     def huawei_5300_selt_test(host: str, interface_address: str):
+        logger.info("Huawei 5300 selt test is starting...")
         with Telnet(host) as tn_socket:
             logger.info("Connect to interface...")
             tn_socket.write(RuntimeConfig.USERNAME.encode("ascii") + b"\r\n")
@@ -40,3 +40,7 @@ class SeltTest:
             tn_socket.write(f"adsl activate adsl {interface_address}".encode("ascii") + b"\r\n")
 
         return Utils.retrieve_line_length(result)
+    
+    @staticmethod
+    def huawei_5600_selt_test(host: str, interface_address: str) -> str:
+    
