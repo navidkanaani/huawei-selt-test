@@ -42,5 +42,22 @@ class SeltTest:
         return Utils.retrieve_line_length(result)
     
     @staticmethod
-    def huawei_5600_selt_test(host: str, interface_address: str) -> str:
-    
+    def huawei_5600_selt_test(host: str, interface_address: str, port: str) -> str:
+        logger.critical("Huawei 5600 selt test is starting...") 
+        with Telnet(host) as tn_socket:
+            time.sleep(0.5)
+            tn_socket.write(RuntimeConfig.USERNAME.encode("ascii") + b"\r\n")
+            time.sleep(0.5)
+            tn_socket.write(RuntimeConfig.PASSWORD.encode("ascii") + b"\r\n")
+            logger.info("Login user.")
+            # breakpoint()
+            tn_socket.write("enable".encode("ascii") + b"\r\n")
+            tn_socket.write("config".encode("ascii") + b"\r\n")
+            tn_socket.write(f"interface adsl {interface_address}".encode("ascii") + b"\r\n")
+            tn_socket.write(f"deactivate {port}".encode("ascii") + b"\r\n")
+            # breakpoint()
+            result = tn_socket.read_very_eager().decode("ascii")
+            deactivated = Utils.huawei_5600_deactivate_confirm(result)
+
+        
+SeltTest.huawei_5600_selt_test("192.168.40.115", "0/3", "1")
