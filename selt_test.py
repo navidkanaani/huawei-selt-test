@@ -38,7 +38,7 @@ class SeltTest:
             time.sleep(20)
             logger.critical("Activating interface.")
             tn_socket.write(f"adsl activate adsl {interface_address}".encode("ascii") + b"\r\n")
-        return Utils.retrieve_line_length(result)
+        return Utils.huawei_5300_retrieve_line_length(result)
     
     @staticmethod
     def huawei_5600_selt_test(host: str, interface_address: str, port: str) -> str:

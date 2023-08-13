@@ -3,7 +3,7 @@ import re
 
 class Utils:
     @staticmethod
-    def retrieve_line_length(telnet_log):
+    def huawei_5300_retrieve_line_length(telnet_log):
         line_length_pattern = r"line length.*feet"
         line_length_meters_value_pattern = r"\d.+ m"
         line_length = re.findall(line_length_pattern, telnet_log)
