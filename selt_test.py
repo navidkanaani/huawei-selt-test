@@ -62,24 +62,19 @@ class SeltTest:
             logger.critical("Deactivating port...")
             tn_socket.write(f"deactivate {port}".encode("ascii") + b"\r\n")
             time.sleep(1)
-            deactivate_result = tn_socket.read_very_eager().decode("ascii")
-            deactivated = Utils.huawei_5600_deactivate_confirmation(deactivate_result)
-            if deactivated:
-                try:
-                    logger.critical("Starting SELT test...")
-                    tn_socket.write(f"adsl selt {port}".encode("ascii") + b"\r\n\r\n")
-                    tn_socket.read_until("SELT finish successfully".encode("ascii"))
-                    time.sleep(1)
-                    result = tn_socket.read_very_eager().decode("ascii")
-                    logger.info(result)
-                    logger.info("Fetching result...")
-                    line_length = Utils.huawei_5600_retrieve_line_length(result)
-                    logger.critical("Activating port...")
-                    tn_socket.write(f"activate {port}".encode("ascii") + b"\r\n")
-                except Exception as error:
-                    logger.critical(f"Test failed, try again :(" + error)
-                    tn_socket.close()
-                    SeltTest.huawei_5600_selt_test(host=host, interface_address=interface_address, port=port)
-            else:
-                logger.error("There is some problem to deactivating the port, please check port status.")
+            try:
+                logger.critical("Starting SELT test...")
+                tn_socket.write(f"adsl selt {port}".encode("ascii") + b"\r\n\r\n")
+                tn_socket.read_until("SELT finish successfully".encode("ascii"))
+                time.sleep(1)
+                result = tn_socket.read_very_eager().decode("ascii")
+                logger.info(result)
+                logger.info("Fetching result...")
+                line_length = Utils.huawei_5600_retrieve_line_length(result)
+                logger.critical("Activating port...")
+                tn_socket.write(f"activate {port}".encode("ascii") + b"\r\n")
+            except Exception as error:
+                logger.critical(f"Test failed, try again :(" + error)
+                tn_socket.close()
+                SeltTest.huawei_5600_selt_test(host=host, interface_address=interface_address, port=port)
         return line_length
