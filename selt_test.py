@@ -10,6 +10,7 @@ logger = logging.getLogger("app")
 class SeltTest:
     @staticmethod
     def huawei_5300_selt_test(host: str, interface_address: str):
+        line_length = ""
         logger.info("Huawei 5300 selt test is starting...")
         with Telnet(host) as tn_socket:
             logger.info("Connect to port...")
@@ -31,6 +32,7 @@ class SeltTest:
             try:
                 result = tn_socket.read_very_eager().decode("ascii")
                 logger.critical(result)
+                line_length = Utils.huawei_5300_retrieve_line_length(result)
             except BrokenPipeError as error:
                 logger.error("Test failed, trying again :(" + error)
                 tn_socket.close()
@@ -38,7 +40,7 @@ class SeltTest:
             time.sleep(20)
             logger.critical("Activating port.")
             tn_socket.write(f"adsl activate adsl {interface_address}".encode("ascii") + b"\r\n")
-        return Utils.huawei_5300_retrieve_line_length(result)
+        return line_length
     
     @staticmethod
     def huawei_5600_selt_test(host: str, interface_address: str, port: str) -> str:
