@@ -11,12 +11,17 @@ class SeltTest:
     @staticmethod
     def huawei_5300_selt_test(host: str, interface_address: str):
         line_length = ""
-        logger.info("Huawei 5300 selt test is starting...")
+        logger.critical("Huawei 5300 selt test is starting...")
         with Telnet(host) as tn_socket:
-            logger.info("Connect to port...")
+            logger.critical("Connect to port...")
+            time.sleep(0.5)
             tn_socket.write(RuntimeConfig.USERNAME.encode("ascii") + b"\r\n")
+            time.sleep(0.5)
             tn_socket.write(RuntimeConfig.PASSWORD.encode("ascii") + b"\r\n")
-            logger.info("Login user.")
+            time.sleep(1)
+            login_result = tn_socket.read_very_eager().decode("ascii")
+            Utils.huawei_5300_login_check(tn_socket, login_result)
+            logger.critical("Login user.")
             tn_socket.write("enable".encode("ascii") + b"\r\n")
             tn_socket.write("configure terminal".encode("ascii") + b"\r\n")
             logger.critical("Deactivating port.")
@@ -26,15 +31,15 @@ class SeltTest:
             tn_socket.write("adsl test selt".encode("ascii") + b"\r\n\r\n")
             tn_socket.write("exit".encode("ascii") + b"\r\n\r\n")
             time.sleep(60)
-            logger.info("Fetching test result...")
             tn_socket.write(f"show adsl test selt adsl {interface_address}".encode("ascii") + b"\r\n\r\n")
             time.sleep(10)
             try:
+                logger.info("Fetching test result...")
                 result = tn_socket.read_very_eager().decode("ascii")
                 logger.critical(result)
                 line_length = Utils.huawei_5300_retrieve_line_length(result)
-            except BrokenPipeError as error:
-                logger.error("Test failed, trying again :(" + error)
+            except Exception as error:
+                logger.error(error)
                 tn_socket.close()
                 SeltTest.huawei_5300_selt_test(host=host, interface_address=interface_address)
             time.sleep(20)
@@ -78,3 +83,5 @@ class SeltTest:
                 tn_socket.close()
                 SeltTest.huawei_5600_selt_test(host=host, interface_address=interface_address, port=port)
         return line_length
+
+SeltTest.huawei_5300_selt_test("192.168.40.83", "2/0/47")
