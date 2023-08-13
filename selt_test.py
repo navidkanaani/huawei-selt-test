@@ -13,7 +13,7 @@ class SeltTest:
         line_length = ""
         logger.critical("Huawei 5300 selt test is starting...")
         with Telnet(host) as tn_socket:
-            logger.critical("Connect to port...")
+            logger.critical("Connecting to port...")
             time.sleep(0.5)
             tn_socket.write(RuntimeConfig.USERNAME.encode("ascii") + b"\r\n")
             time.sleep(0.5)
@@ -32,11 +32,11 @@ class SeltTest:
             tn_socket.write("exit".encode("ascii") + b"\r\n\r\n")
             time.sleep(60)
             tn_socket.write(f"show adsl test selt adsl {interface_address}".encode("ascii") + b"\r\n\r\n")
-            time.sleep(10)
+            time.sleep(15)
             try:
                 logger.info("Fetching test result...")
                 result = tn_socket.read_very_eager().decode("ascii")
-                logger.critical(result)
+                logger.info(result)
                 line_length = Utils.huawei_5300_retrieve_line_length(result)
             except Exception as error:
                 logger.error(error)
@@ -45,6 +45,7 @@ class SeltTest:
             time.sleep(20)
             logger.critical("Activating port.")
             tn_socket.write(f"adsl activate adsl {interface_address}".encode("ascii") + b"\r\n")
+            tn_socket.close()
         return line_length
     
     @staticmethod
@@ -52,6 +53,7 @@ class SeltTest:
         line_length = ""
         logger.critical("Huawei 5600 selt test is starting...") 
         with Telnet(host) as tn_socket:
+            logger.critical("Connecting to port...")
             time.sleep(0.5)
             tn_socket.write(RuntimeConfig.USERNAME.encode("ascii") + b"\r\n")
             time.sleep(0.5)
@@ -80,6 +82,7 @@ class SeltTest:
                 line_length = Utils.huawei_5600_retrieve_line_length(result)
                 logger.critical("Activating port...")
                 tn_socket.write(f"activate {port}".encode("ascii") + b"\r\n")
+                tn_socket.close()
             except Exception as error:
                 logger.critical(f"Test failed, try again :(" + error)
                 tn_socket.close()
