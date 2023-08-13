@@ -19,7 +19,7 @@ class Utils:
             return True
         elif re.findall(login_failed_pattern, telnet_result):
             socket.close()
-            raise Exception("Wronge username or password!")
+            raise Exception("Wrong username or password!")
         
     
     @staticmethod
@@ -38,3 +38,13 @@ class Utils:
         line_length = re.findall(line_length_pattern, result)
         line_length_meters = re.findall(line_length_meters_pattern, line_length[0])
         return line_length_meters[0]
+    
+    @staticmethod
+    def huawei_5600_login_check(socket, telnet_result):
+        login_success_pattern = r"User last login information"
+        login_failed_pattern = r"Username or password invalid."
+        if re.findall(login_success_pattern, telnet_result):
+            return True
+        elif re.findall(login_failed_pattern, telnet_result):
+            raise Exception("Wrong username or password!")
+

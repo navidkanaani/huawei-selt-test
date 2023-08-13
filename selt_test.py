@@ -58,6 +58,8 @@ class SeltTest:
             tn_socket.write(RuntimeConfig.PASSWORD.encode("ascii") + b"\r\n")
             logger.info("Login user.")
             time.sleep(1)
+            login_result = tn_socket.read_very_eager().decode("ascii")
+            Utils.huawei_5600_login_check(tn_socket, login_result)
             tn_socket.write("enable".encode("ascii") + b"\r\n")
             time.sleep(1)
             tn_socket.write("config".encode("ascii") + b"\r\n")
@@ -83,5 +85,3 @@ class SeltTest:
                 tn_socket.close()
                 SeltTest.huawei_5600_selt_test(host=host, interface_address=interface_address, port=port)
         return line_length
-
-SeltTest.huawei_5300_selt_test("192.168.40.83", "2/0/47")
