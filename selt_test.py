@@ -9,7 +9,7 @@ logger = logging.getLogger("app")
 
 class SeltTest:
     @staticmethod
-    def huawei_5300_selt_test(host: str, interface_address: str):
+    def huawei_5300_selt_test(host, interface_address):
         line_length = ""
         logger.critical("Huawei 5300 selt test is starting...")
         with Telnet(host) as tn_socket:
@@ -25,13 +25,13 @@ class SeltTest:
             tn_socket.write("enable".encode("ascii") + b"\r\n")
             tn_socket.write("configure terminal".encode("ascii") + b"\r\n")
             logger.critical("Deactivating port.")
-            tn_socket.write(f"adsl deactivate adsl {interface_address}".encode("ascii") + b"\r\n\r\n")
-            tn_socket.write(f"interface adsl {interface_address}".encode("ascii") + b"\r\n\r\n")
+            tn_socket.write("adsl deactivate adsl ".encode("ascii") + interface_address.encode("ascii") + b"\r\n\r\n")
+            tn_socket.write("interface adsl ".encode("ascii") + interface_address.encode("ascii") + b"\r\n\r\n")
             logger.info("Testing port.")
             tn_socket.write("adsl test selt".encode("ascii") + b"\r\n\r\n")
             tn_socket.write("exit".encode("ascii") + b"\r\n\r\n")
             time.sleep(60)
-            tn_socket.write(f"show adsl test selt adsl {interface_address}".encode("ascii") + b"\r\n\r\n")
+            tn_socket.write("show adsl test selt adsl ".encode("ascii") + interface_address.encode("ascii") + b"\r\n\r\n")
             time.sleep(15)
             try:
                 logger.info("Fetching test result...")
@@ -44,7 +44,7 @@ class SeltTest:
                 SeltTest.huawei_5300_selt_test(host=host, interface_address=interface_address)
             time.sleep(20)
             logger.critical("Activating port.")
-            tn_socket.write(f"adsl activate adsl {interface_address}".encode("ascii") + b"\r\n")
+            tn_socket.write("adsl activate adsl ".encode("ascii") + interface_address.encode("ascii") + b"\r\n")
             tn_socket.close()
         return line_length
     
